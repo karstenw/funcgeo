@@ -64,29 +64,44 @@ def grid(m, n, s):
             for (x0, y0), (x1, y1) in s)
     return _
 
-def polygon(points):
+def polygon(points, closed=True):
     """Converts the given points, which specify a polygon, into a list of
-    lines suitable for input into the grid() function."""
-    return tuple((points[i-1], point) for i, point in enumerate(points))
+    lines suitable for input into the grid() function.
+    
+    TBD: clean up! The closed arg is ugly."""
+    if closed:
+        return tuple((points[i-1], point) for i, point in enumerate(points))
+    else:
+        return tuple((point, points[i+1]) for i, point in enumerate(points[:-1]))
 
 def blank():
     """A blank picture function."""
     return lambda a, b, c: ()
 
-def beside(p, q):
-    """Places picture p beside picture q."""
-    def _(a, b, c):
-        b_half = vdiv(b, 2)
-        return tuple(set(p(a, b_half, c) +
-                         q(vadd(a, b_half), b_half, c)))
-    return _
+# deactivated; merged with abovequad/besidequad below
+#
+# to be deleted
+# def beside(p, q):
+#     """Places picture p beside picture q."""
+#     def _(a, b, c):
+#         b_half = vdiv(b, 2)
+#         return tuple(set(  p(a, b_half, c)
+#                          + q(vadd(a, b_half), b_half, c)))
+#     return _
+# 
+# def above(p, q):
+#     """Places picture p above picture q."""
+#     def _(a, b, c):
+#         c_half = vdiv(c, 2)
+#         return tuple(set(  p(vadd(a, c_half), b, c_half)
+#                          + q(a, b, c_half)))
+#     return _
 
-def above(p, q):
-    """Places picture p above picture q."""
+def over(p, q):
+    """Places picture p over picture q."""
     def _(a, b, c):
-        c_half = vdiv(c, 2)
-        return tuple(set(p(vadd(a, c_half), b, c_half) +
-                         q(a, b, c_half)))
+        return tuple(set(  p(a, b, c)
+                         + q(a, b, c)))
     return _
 
 def rot(p):
@@ -102,63 +117,71 @@ def cycle(p):
     return quartet(p, rot(rot(rot(p))), rot(p), rot(rot(p)))
 
 def flip(p):
-   """Flips picture horizontally"""
-   def _(a, b, c):
-       return p(vadd(a, b), vmul(b, -1), c)
-   return _
+    """Flips picture horizontally"""
+    return lambda a, b, c: p( vadd(a, b),
+                              vmul(b, -1),
+                              c)
 
 def rot45(p):
-   """Rotates picture p by 45 degrees."""
-   def _(a, b, c):
-       return p(vadd(a, vdiv(vadd(b, c),2)),
-                vdiv(vadd(b, c),2),
-                vdiv(vadd(c, vmul(b, -1)), 2))
+    """Rotates picture p by 45 degrees."""
+    return lambda a, b, c: p(vadd(a, vdiv(vadd(b, c),2)),
+                             vdiv(vadd(b, c),2),
+                             vdiv(vadd(c, vmul(b, -1)), 2))
 
-def besidequad(m, n, p, q):
-   """Places picture p beside picture q scaled by m & n."""
-   def _(a, b, c):
-       mnscale = float(m) / (m + n)
-       nmscale = float(n) / (m + n)
-       pv = p(a, vmul(b, mnscale), c)
-       qv = q(vadd(a, vmul(b, mnscale)), vmul(b, nmscale), c)
-       return tuple(set(pv + qv))
-   return _
+def beside(p, q, m=1, n=1):
+    """Places pictures p beside q divided by ratio(m,n)."""
+    def _(a, b, c):
+        mnscale = float(m) / (m + n)
+        nmscale = float(n) / (m + n)
+        pv = p(a, vmul(b, mnscale), c)
+        qv = q(vadd(a, vmul(b, mnscale)), vmul(b, nmscale), c)
+        return tuple(set( pv + qv ))
+    return _
 
-def abovequad(m, n, p, q):
-   """Places picture p beside picture q scaled by m & n."""
-   def _(a, b, c):
-       mnscale = float(m) / (m + n)
-       nmscale = float(n) / (m + n)
-       pv = p(vadd(a, vmul(c, nmscale)), b, vmul(c, mnscale))
-       qv = q(a, b, vmul(c, nmscale))
-       return tuple(set(pv + qv))
-   return _
+def above(p, q, m=1, n=1):
+    """Places picture p beside picture q scaled by m & n."""
+    def _(a, b, c):
+        mnscale = float(m) / (m + n)
+        nmscale = float(n) / (m + n)
+        pv = p(vadd(a, vmul(c, nmscale)), b, vmul(c, mnscale))
+        qv = q(a, b, vmul(c, nmscale))
+        return tuple(set( pv + qv ))
+    return _
 
-def nonet(p, q, r,
-          s, t, u,
+def nonet(p, q, r, 
+          s, t, u, 
           v, w, x):
-    return abovequad(
-        1, 2,
-        besidequad(
-            1, 2,
-            p, besidequad(1, 1, q, r)),
-        abovequad(
-            1, 1,
-            besidequad(
-                1, 2,
-                s, besidequad(1, 1, t, u)),
-            besidequad(
-                1, 2,
-                v, besidequad(1, 1, w, x))))
+    return above( # first row
+                  beside(p, beside(q, r), 1, 2),
 
-def plot(p, f=sys.stdout):
+                  above( #second row
+                         beside(s, beside(t, u), 1, 2),
+                         
+                         # third row
+                         beside(v, beside(w, x), 1, 2)),
+                  1, 2)
+
+def plot(p, f=sys.stdout, title=""):
     """Writes the given picture function to the given file as PostScript."""
-    def w(*s): print >> f, '\n'.join(s)
+    def w(*s):
+        print >> f, '\n'.join(s)
 
-    w('500 500 scale', '.1 .1 translate', '0 setlinewidth',
-      '0 0 moveto 1 0 lineto 1 1 lineto 0 1 lineto 0 0 lineto')
+    if title:
+        w('gsave /Courier findfont 18 scalefont setfont',
+          '0 0 translate',
+          '1 1 scale',
+          '50 730 moveto',
+          '(%s) show' % str(title),
+          'grestore' )
 
-    for (x0, y0), (x1, y1) in p((0,0), (1,0), (0,1)):
+    w('400 400 scale',
+      '.3 .2 translate',
+      '1 setlinewidth',
+      '0 0 moveto 1 0 lineto 1 1 lineto 0 1 lineto 0 0 lineto',
+      '0 setlinewidth'
+      )
+
+    for (x0, y0), (x1, y1) in p( (0,0), (1,0), (0,1) ):
         w('%f %f moveto %f %f lineto' % (x0, y0, x1, y1))
 
     w('stroke', 'showpage')
