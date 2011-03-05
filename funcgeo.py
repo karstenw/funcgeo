@@ -78,25 +78,6 @@ def blank():
     """A blank picture function."""
     return lambda a, b, c: ()
 
-# deactivated; merged with abovequad/besidequad below
-#
-# to be deleted
-# def beside(p, q):
-#     """Places picture p beside picture q."""
-#     def _(a, b, c):
-#         b_half = vdiv(b, 2)
-#         return tuple(set(  p(a, b_half, c)
-#                          + q(vadd(a, b_half), b_half, c)))
-#     return _
-# 
-# def above(p, q):
-#     """Places picture p above picture q."""
-#     def _(a, b, c):
-#         c_half = vdiv(c, 2)
-#         return tuple(set(  p(vadd(a, c_half), b, c_half)
-#                          + q(a, b, c_half)))
-#     return _
-
 def over(p, q):
     """Places picture p over picture q."""
     def _(a, b, c):
