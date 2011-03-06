@@ -79,6 +79,10 @@ if __name__ == '__main__':
     fish16 = grid( 80, 80,
                    polygon( ( (36,30), (40,26) ), False ))
 
+    # triangle
+    triangle = grid( 2, 2,
+                     polygon( ((0, 0), (2, 0), (0, 2)) ))
+
     # put the pieces together
     fish = over( fish1,
             over( fish2,
@@ -154,4 +158,24 @@ if __name__ == '__main__':
     squarelimit2 = nonet( corner2,      side2,           rot(rot(rot(corner2))),
                           rot(side2),   u,               rot(rot(rot(side2))),
                           rot(corner2), rot(rot(side2)), rot(rot(corner2)))
-    plot( squarelimit2, title="squarelimit2")
+    plot( squarelimit2, title="Figure 15: squarelimit2")
+
+    
+    tri1 = triangle
+    tri2 = flip(rot45(tri1))
+    tri3 = rot(rot(rot(tri2)))
+    
+    t = over(tri1, over(tri2, tri3))
+    u = over(over(tri2, rot(tri2)),
+             over(rot(rot(tri2)), rot(rot(rot(tri2)))))
+    v = cycle( rot(t) )
+    side1 = quartet( empty, empty, rot(t), t)
+    side2 = quartet( side1, side1, rot(t), t)
+    corner1 = quartet( empty, empty,
+                       empty, u)
+    corner2 = quartet( corner1,    side1,
+                       rot(side1), u)
+    squarelimit2 = nonet( corner2,      side2,           rot(rot(rot(corner2))),
+                          rot(side2),   u,               rot(rot(rot(side2))),
+                          rot(corner2), rot(rot(side2)), rot(rot(corner2)))
+    plot( squarelimit2, title="Figure 16: squarelimit2 triangle skeleton")
