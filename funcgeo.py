@@ -57,12 +57,12 @@ def vsub(v1, v2):
 def grid(m, n, s):
     """Defines a picture function from lines in a grid, s, bounded by vectors
     m and n."""
-    def _(a, b, c):
+    def _grid(a, b, c):
         return tuple(
             (reduce(vadd, (vdiv(vmul(b, x0), m), a, vdiv(vmul(c, y0), n))),
              reduce(vadd, (vdiv(vmul(b, x1), m), a, vdiv(vmul(c, y1), n))))
             for (x0, y0), (x1, y1) in s)
-    return _
+    return _grid
 
 def polygon(points, closed=True):
     """Converts the given points, which specify a polygon, into a list of
@@ -76,18 +76,22 @@ def polygon(points, closed=True):
 
 def blank():
     """A blank picture function."""
-    return lambda a, b, c: ()
+    def _blank(a,b,c):
+        return ()
+    return _blank
 
 def over(p, q):
     """Places picture p over picture q."""
-    def _(a, b, c):
+    def o(a, b, c):
         return tuple(set(  p(a, b, c)
                          + q(a, b, c)))
-    return _
+    return o
 
 def rot(p):
     """Rotates picture p by 90 degrees."""
-    return lambda a, b, c: p(vadd(a, b), c, vmul(b, -1))
+    def r1(a,b,c):
+        return p(vadd(a, b), c, vmul(b, -1))
+    return r1
 
 def quartet(p1, p2, p3, p4):
     """Returns the given pictures laid out in a square."""
@@ -99,35 +103,37 @@ def cycle(p):
 
 def flip(p):
     """Flips picture horizontally"""
-    return lambda a, b, c: p( vadd(a, b),
-                              vmul(b, -1),
-                              c)
+    def _flip(a,b,c):
+        return p( vadd(a, b), vmul(b, -1), c)
+    return _flip
 
 def rot45(p):
     """Rotates picture p by 45 degrees."""
-    return lambda a, b, c: p(vadd(a, vdiv(vadd(b, c),2)),
-                             vdiv(vadd(b, c),2),
-                             vdiv(vadd(c, vmul(b, -1)), 2))
+    def _rot45(a,b,c):
+        return p(vadd(a, vdiv(vadd(b, c),2)),
+                 vdiv(vadd(b, c),2),
+                 vdiv(vadd(c, vmul(b, -1)), 2))
+    return _rot45
 
 def beside(p, q, m=1, n=1):
     """Places pictures p beside q divided by ratio(m,n)."""
-    def _(a, b, c):
+    def _beside(a, b, c):
         mnscale = float(m) / (m + n)
         nmscale = float(n) / (m + n)
         pv = p(a, vmul(b, mnscale), c)
         qv = q(vadd(a, vmul(b, mnscale)), vmul(b, nmscale), c)
         return tuple(set( pv + qv ))
-    return _
+    return _beside
 
 def above(p, q, m=1, n=1):
     """Places picture p beside picture q scaled by m & n."""
-    def _(a, b, c):
+    def _above(a, b, c):
         mnscale = float(m) / (m + n)
         nmscale = float(n) / (m + n)
         pv = p(vadd(a, vmul(c, nmscale)), b, vmul(c, mnscale))
         qv = q(a, b, vmul(c, nmscale))
         return tuple(set( pv + qv ))
-    return _
+    return _above
 
 def nonet(p, q, r, 
           s, t, u, 
