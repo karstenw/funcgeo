@@ -156,7 +156,7 @@ def plot(p, f=sys.stdout, title=""):
           'grestore' )
 
     w('400 400 scale',
-      '.3 .2 translate',
+      '.25 .25 translate',
       '1 setlinewidth',
       '0 0 moveto 1 0 lineto 1 1 lineto 0 1 lineto 0 0 lineto',
       '0 setlinewidth'
@@ -189,6 +189,11 @@ if __name__ == '__main__':
     man_quartet = quartet(man, man, man, man)
     man_cycle = cycle(man)
 
+    plot(man, title="Man")
+    plot(man_beside_man, title="man_beside_man")
+    plot(man_rotated, title="man_rotated")
+    plot(man_quartet, title="man_quartet")
+    plot(man_cycle, title="man_cycle")
 
     ##########################################################################
     # the fish
