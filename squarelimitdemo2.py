@@ -1,36 +1,13 @@
 from funcgeo import *
 
-from fishdrawing import fish
-from types import FunctionType
-
-import pdb
-import pprint
-pp = pprint.pprint
-
-triangle = grid( 2, 2,
-                 polygon( ((0, 0), (2, 0), (0, 2)) ))
-
-
-picture = fish
-picture = triangle
-
-# parts
-empty = blank()
-
-# two fish filling a triangle
-pictri = over( flip( rot45(picture)),
-                flip( rot( rot45(picture))))
-
-triangle = grid( 2, 2,
-                 polygon( ((0, 0), (2, 0), (0, 2)) ))
+from fishmodel import fish
 
 
 # the start symbol
 start = ('u','c','b','r')
 
+
 # all the substitutions needed for expanding the squarelimit quarter
-
-
 layoutexpansions = {
     # ucbr is start symbol; gets expanded once
     #
@@ -74,19 +51,16 @@ layoutexpansions = {
 
 
 def makeparts( basepict ):
-    """Make the squarelimit parts
-    """
+    """Make the squarelimit parts; lots of vars packed up in a dict."""
+
     picture = basepict
     
-    # parts
-    empty = blank()
-    
-    # two fish filling a triangle
+    # two pictures filling a triangle
     pictriangle = over( flip( rot45(picture)),
                     flip( rot( rot45(picture))))
 
     # parts named here for mnemotic 
-    e = empty
+    e = blank()
     b = over(picture, pictriangle)
     b1 = b
     u1 = rot(b)
@@ -99,18 +73,6 @@ def makeparts( basepict ):
     r = quartet(r1,e,r2,e)
     return (e,b,b1,u1,u2,u,c1,c,r1,r2,r)
 
-
-# e = empty
-# b = over(picture, pictri)
-# b1 = b
-# u1 = rot(b)
-# u2 = b
-# u = quartet(e,e,u1,u2)
-# c1 = over(pictri, rot(rot(pictri)))
-# c = quartet(e,e,c1,e)
-# r1 = b
-# r2 = rot(rot(rot(b)))
-# r = quartet(r1,e,r2,e)
 
 def maketranslator( picture ):
     e,b,b1,u1,u2,u,c1,c,r1,r2,r = makeparts( picture )
@@ -193,32 +155,48 @@ def makecalls( s, translator ):
     return r
 
 
-# make several squarelimit pictures
+if __name__ == '__main__':
 
-layout = start
+    # alternate picture
+    triangle = grid( 2, 2,
+                 polygon( ((0, 0), (2, 0), (0, 2)) ))
 
-for i in range(3):
-    # 
-    layout = makelayout( layout, i, layoutexpansions)
+    e = blank()
+    weirdtriangle = over(triangle, nonet( e,e,e,
+                                          triangle,triangle,e,
+                                          e,e,e,))
 
-    # 
-    fishtranslator = maketranslator( fish )
+    # make several squarelimit pictures
+    layout = start
+    
+    for i in range(3):
+        # 1 layout
+        layout = makelayout( layout, i, layoutexpansions)
+    
+        # 3 translators
+        fishtranslator = maketranslator( fish )
+        triangletranslator = maketranslator( triangle )
+        weirdtriangletranslator = maketranslator( weirdtriangle )
 
-    triangletranslator = maketranslator( triangle )
-    #
-
-    fishquarters = makecalls(layout, fishtranslator)
-    triquarters = makecalls(layout, triangletranslator)
-
-
-    # draw the triangle quarter
-    plot(triquarters, title="quarter " + str(i))
-
-    # draw the fish quarter
-    plot(fishquarters, title="quarter " + str(i))
-
-    # draw triangle squarelimit
-    plot( cycle(rot(triquarters)), title="triangle squarelimit level "+str(i))
-
-    # draw fish squarelimit
-    plot( cycle(rot(fishquarters)), title="triangle squarelimit level "+str(i))
+        # 3 pictures
+        fishquarters = makecalls(layout, fishtranslator)
+        triquarters = makecalls(layout, triangletranslator)
+        weirdquarters = makecalls(layout, weirdtriangletranslator)
+    
+        # draw the triangle quarter
+        plot(triquarters, title="triangle quarter " + str(i))
+    
+        # draw the weird triangle quarter
+        plot(weirdquarters, title="3 triangles quarter " + str(i))
+    
+        # draw the fish quarter
+        plot(fishquarters, title="fish quarter " + str(i))
+    
+        # draw triangle squarelimit
+        plot( cycle(rot(triquarters)), title="triangle squarelimit level "+str(i))
+    
+        # draw weird triangle squarelimit
+        plot( cycle(rot(weirdquarters)), title="3 triangles squarelimit level "+str(i))
+    
+        # draw fish squarelimit
+        plot( cycle(rot(fishquarters)), title="fish squarelimit level "+str(i))
