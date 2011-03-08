@@ -24,6 +24,9 @@ to sys.stdout.
 import sys
 from operator import add, sub
 
+import pdb
+import pprint
+pp = pprint.pprint
 
 ##############################################################################
 # The framework.
@@ -82,16 +85,16 @@ def blank():
 
 def over(p, q):
     """Places picture p over picture q."""
-    def o(a, b, c):
+    def _over(a, b, c):
         return tuple(set(  p(a, b, c)
                          + q(a, b, c)))
-    return o
+    return _over
 
 def rot(p):
     """Rotates picture p by 90 degrees."""
-    def r1(a,b,c):
+    def _rot(a,b,c):
         return p(vadd(a, b), c, vmul(b, -1))
-    return r1
+    return _rot
 
 def quartet(p1, p2, p3, p4):
     """Returns the given pictures laid out in a square."""
@@ -165,12 +168,10 @@ def plot(p, f=sys.stdout, title=""):
       '.25 .25 translate',
       '1 setlinewidth',
       '0 0 moveto 1 0 lineto 1 1 lineto 0 1 lineto 0 0 lineto',
-      '0 setlinewidth'
-      )
+      '0 setlinewidth')
 
     for (x0, y0), (x1, y1) in p( (0,0), (1,0), (0,1) ):
         w('%f %f moveto %f %f lineto' % (x0, y0, x1, y1))
-
     w('stroke', 'showpage')
 
 

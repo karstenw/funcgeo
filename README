@@ -1,8 +1,11 @@
 Functional Geometry
 
 Original idea by Peter Henderson, see
-http://www.ecs.soton.ac.uk/~ph/funcgeo.pdf and
+
+http://www.ecs.soton.ac.uk/~ph/funcgeo.pdf
 http://www.ecs.soton.ac.uk/~ph/papers/funcgeo2.pdf
+http://www.brics.dk/~hosc/local/HOSC-15-4-pp349-365.pdf
+
 
 Implemented in Lisp by Frank Buß, see
 http://www.frank-buss.de/lisp/functional.html
