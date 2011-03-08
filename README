@@ -11,3 +11,14 @@ Implemented in Lisp by Frank Buß, see
 http://www.frank-buss.de/lisp/functional.html
 
 Ported to Python and Haskell by Will McCutchen <mccutchen@gmail.com>
+
+
+Run the squarelimit demos like this:
+
+# create postscript
+python squarelimitdemo1.py > squarelimitdemo1.ps
+python squarelimitdemo2.py > squarelimitdemo2.ps
+
+# make a PDF from the generated postscript
+ps2pdf squarelimitdemo1.ps
+ps2pdf squarelimitdemo2.ps
