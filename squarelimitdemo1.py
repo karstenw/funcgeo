@@ -5,14 +5,35 @@ from fishmodel import fish
 triangle = grid( 2, 2,
                  polygon( ((0, 0), (2, 0), (0, 2)) ))
 
+letterF = grid( 8, 8,
+                polygon( ( (2,1), (2,7), (6,7), (6,6), (3,6), (3,5), (5,5), (5,4), (3,4), (3,1) ) ))
+
+pictureframe = grid( 2, 2,
+                     polygon( ( (0.1,0.1), (1.9,0.1), (1.9,1.9), (0.1,1.9) ) ))
 
 if __name__ == '__main__':
-
 
     # parts
     empty = blank()
 
     # henderson hosc figures
+    # figure 1
+    fig1 = letterF
+    plot(fig1, title="Figure 1a: Letter F")
+    plot(rot(fig1), title="Figure 1b: Letter F rot()")
+    plot(flip(fig1), title="Figure 1c: Letter F flip()")
+    plot(rot(flip(fig1)), title="Figure 1d: Letter F rot(flip())")
+
+    # figure 2
+    fig2 = letterF
+    plot(above(fig2,fig2), title="Figure 2a: Letter F above()")
+    plot(beside(fig2,fig2), title="Figure 2b: Letter F beside()")
+    plot(above(beside(fig2,fig2), fig2), title="Figure 2c: Letter F above(beside())")
+
+    fig2d = over(letterF, pictureframe)
+    plot(rot45(fig2d), title="Figure 2d: Letter F rot45() with frame")
+    
+
     
     # figure 4
     fig4 = fish
