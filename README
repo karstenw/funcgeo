@@ -22,3 +22,5 @@ python squarelimitdemo2.py > squarelimitdemo2.ps
 # make a PDF from the generated postscript
 ps2pdf squarelimitdemo1.ps
 ps2pdf squarelimitdemo2.ps
+
+or point your favorite postscript viewer to the .ps files.
