@@ -1,6 +1,6 @@
 from funcgeo import *
 
-from fishdrawing import fish
+from fishmodel import fish
 
 triangle = grid( 2, 2,
                  polygon( ((0, 0), (2, 0), (0, 2)) ))
