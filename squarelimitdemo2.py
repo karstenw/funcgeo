@@ -162,14 +162,25 @@ if __name__ == '__main__':
                  polygon( ((0, 0), (2, 0), (0, 2)) ))
 
     e = blank()
+
     weirdtriangle = over(triangle, nonet( e,e,e,
                                           triangle,triangle,e,
-                                          e,e,e,))
+                                          e,e,e))
+
+    # variation of this theme
+    weirdtriangle2 = over(triangle, nonet( e,e,e,
+                                          triangle,triangle,e,
+                                          triangle,e,triangle,))
+
+    plot(triangle)
+    plot(weirdtriangle)
+    plot(weirdtriangle2)
+    plot(fish)
 
     # make several squarelimit pictures
     layout = start
     
-    for i in range(3):
+    for i in range(2):
         # 1 layout
         layout = makelayout( layout, i, layoutexpansions)
     
@@ -177,17 +188,21 @@ if __name__ == '__main__':
         fishtranslator = maketranslator( fish )
         triangletranslator = maketranslator( triangle )
         weirdtriangletranslator = maketranslator( weirdtriangle )
+        weirdtriangletranslator2 = maketranslator( weirdtriangle2 )
 
         # 3 pictures
         fishquarters = makecalls(layout, fishtranslator)
         triquarters = makecalls(layout, triangletranslator)
         weirdquarters = makecalls(layout, weirdtriangletranslator)
+        weirdquarters2 = makecalls(layout, weirdtriangletranslator2)
     
         # draw the triangle quarter
         plot(triquarters, title="triangle quarter " + str(i))
     
         # draw the weird triangle quarter
         plot(weirdquarters, title="3 triangles quarter " + str(i))
+
+        plot(weirdquarters2, title="5 triangles quarter " + str(i))
     
         # draw the fish quarter
         plot(fishquarters, title="fish quarter " + str(i))
@@ -197,6 +212,9 @@ if __name__ == '__main__':
     
         # draw weird triangle squarelimit
         plot( cycle(rot(weirdquarters)), title="3 triangles squarelimit level "+str(i))
+    
+        # draw weird triangle squarelimit
+        plot( cycle(rot(weirdquarters2)), title="5 triangles squarelimit level "+str(i))
     
         # draw fish squarelimit
         plot( cycle(rot(fishquarters)), title="fish squarelimit level "+str(i))
