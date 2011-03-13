@@ -7,9 +7,17 @@ from fishmodel import fish
 start = ('u','c','b','r')
 
 
-# all the substitutions needed for expanding the squarelimit quarter
-layoutexpansions = {
-    # ucbr is start symbol; gets expanded once
+# all the substitutions needed for expanding the squarelimit quarters
+
+shrinking_sq_rules = {
+    #
+    # these are the rules for the expanding squarelimit
+    #
+    # the idea is to construct a quarter of the picture which will be cycled() for
+    # the final picture.
+    #
+    #
+    # ucbr is the start symbol; will be expanded once
     #
     # u = up (upper left)
     # u -> e,e,u1,u2
@@ -30,10 +38,11 @@ layoutexpansions = {
     #
     # e = empty
     
-    ('u','c','b','r'): ( ('e','e','u1','u2'),
-                         ('e','e','c1','e'),
-                          'b1',
-                         ('r1','e','r2','e') ),
+    # 3 parts get expanded, 1 stays constant
+    start: ( ('e','e','u1','u2'),
+             ('e','e','c1','e'),
+              'b1',
+             ('r1','e','r2','e') ),
 
     ('e','e','u1','u2'): ( ('e','e','u1','u2'),
                            ('e','e','u1','u2'),
@@ -49,8 +58,22 @@ layoutexpansions = {
                          ('r1','e','r2','e')),
 }
 
+growing_sq_rules = {
 
-def makeparts( basepict ):
+    # 1 part gets expanded, 3 stay constant
+    start: ('u1',
+            'b1',
+           ('u1', 'b1', 'e', 'u1'),
+            'u1'),
+
+    ('u1','b1','e','u1'): ('u1',
+                           'b1',
+                          ('u1', 'b1', 'e', 'u1'),
+                           'u1'),
+}
+
+
+def makeparts_shrinking_squarelimit( basepict ):
     """Make the squarelimit parts; lots of vars packed up in a dict."""
 
     picture = basepict
@@ -59,10 +82,7 @@ def makeparts( basepict ):
     pictriangle = over( flip( rot45(picture)),
                     flip( rot( rot45(picture))))
 
-    # parts named here for mnemotic 
-    e = blank()
     b = over(picture, pictriangle)
-    b1 = b
     u1 = rot(b)
     u2 = b
     u = quartet(e,e,u1,u2)
@@ -71,24 +91,42 @@ def makeparts( basepict ):
     r1 = b
     r2 = rot(rot(rot(b)))
     r = quartet(r1,e,r2,e)
-    return (e,b,b1,u1,u2,u,c1,c,r1,r2,r)
-
-
-def maketranslator( picture ):
-    e,b,b1,u1,u2,u,c1,c,r1,r2,r = makeparts( picture )
-    callers = {
-        'e': e,
-        'b1': b1,
+    result = {
+        'e': blank(),
         'b': b,
+        'b1': b,
+        'u': u,
         'u1': u1,
         'u2': u2,
-        'c1': c1,
         'c': c,
+        'c1': c1,
+        'r': r,
         'r1': r1,
-        'r2': r2,
-        'r': r
+        'r2': r2
     }
-    return callers
+    return result
+
+
+def makeparts_growing_squarelimit( basepict ):
+    """Make the squarelimit parts; lots of vars packed up in a dict."""
+
+    picture = basepict
+    
+    # two pictures filling a triangle
+    pictriangle = over( flip( rot45(picture)),
+                    flip( rot( rot45(picture))))
+
+    result = {
+        'e': blank(),
+
+        'b': rot(over(picture, rot(rot(picture)))),
+        'b1': rot(over(picture, rot(rot(picture)))),
+
+        'u': rot(rot(over(picture, pictriangle))),
+        'u1': rot(rot(over(picture, pictriangle)))
+    }
+    
+    return result
 
 
 def substitute( item, rules ):
@@ -177,44 +215,72 @@ if __name__ == '__main__':
     plot(weirdtriangle2)
     plot(fish)
 
-    # make several squarelimit pictures
-    layout = start
+    # make lots of squarelimit pictures
+    layout_shrinking = layout_growing = start
     
     for i in range(2):
-        # 1 layout
-        layout = makelayout( layout, i, layoutexpansions)
+        # 2 layouts
+        layout_shrinking = makelayout( layout_shrinking, i, shrinking_sq_rules)
+        layout_growing = makelayout( layout_growing, i, growing_sq_rules)
     
-        # 3 translators
-        fishtranslator = maketranslator( fish )
-        triangletranslator = maketranslator( triangle )
-        weirdtriangletranslator = maketranslator( weirdtriangle )
-        weirdtriangletranslator2 = maketranslator( weirdtriangle2 )
+        # 4 pictures * 2 layouts
+        # fish
+        fish_shrinking = makeparts_shrinking_squarelimit( fish )
+        fish_growing = makeparts_growing_squarelimit( fish )
 
-        # 3 pictures
-        fishquarters = makecalls(layout, fishtranslator)
-        triquarters = makecalls(layout, triangletranslator)
-        weirdquarters = makecalls(layout, weirdtriangletranslator)
-        weirdquarters2 = makecalls(layout, weirdtriangletranslator2)
+        # 
+        triangle_shrinking = makeparts_shrinking_squarelimit( triangle )
+        triangle_growing = makeparts_growing_squarelimit( triangle )
+
+        # funny looking accidentally discovered
+        weirdtriangle_shrinking = makeparts_shrinking_squarelimit( weirdtriangle )
+        weirdtriangle_growing = makeparts_growing_squarelimit( weirdtriangle )
+
+        # a variation of the previous
+        weirdtriangle2_shrinking = makeparts_shrinking_squarelimit( weirdtriangle2 )
+        weirdtriangle2_growing = makeparts_growing_squarelimit( weirdtriangle2 )
+
+
+        # 4 quarters each in a shrinking and a growing style
+        fishquarters_s = makecalls(layout_shrinking, fish_shrinking)
+        fishquarters_g = makecalls(layout_growing, fish_growing)
+
+        triquarters_s = makecalls(layout_shrinking, triangle_shrinking)
+        triquarters_g = makecalls(layout_growing, triangle_growing)
+
+        weirdquarters_s = makecalls(layout_shrinking, weirdtriangle_shrinking)
+        weirdquarters_g = makecalls(layout_growing, weirdtriangle_growing)
+
+        weirdquarters2_s = makecalls(layout_shrinking, weirdtriangle2_shrinking)
+        weirdquarters2_g = makecalls(layout_growing, weirdtriangle2_growing)
     
-        # draw the triangle quarter
-        plot(triquarters, title="triangle quarter " + str(i))
+        # triangle quarters
+        plot(triquarters_s, title="triangle quarter shrinking " + str(i))
+        plot(triquarters_g, title="triangle quarter growing " + str(i))
     
         # draw the weird triangle quarter
-        plot(weirdquarters, title="3 triangles quarter " + str(i))
+        plot(weirdquarters_s, title="3 triangles quarter shrinking " + str(i))
+        plot(weirdquarters_g, title="3 triangles quarter growing " + str(i))
 
-        plot(weirdquarters2, title="5 triangles quarter " + str(i))
+        plot(weirdquarters2_s, title="5 triangles quarter shrinking " + str(i))
+        plot(weirdquarters2_g, title="5 triangles quarter growing " + str(i))
     
         # draw the fish quarter
-        plot(fishquarters, title="fish quarter " + str(i))
+        plot(fishquarters_s, title="shrinking fish quarter " + str(i))
+        plot(fishquarters_g, title="growing fish quarter " + str(i))
     
         # draw triangle squarelimit
-        plot( cycle(rot(triquarters)), title="triangle squarelimit level "+str(i))
+        plot( cycle(rot(triquarters_s)), title="shrinking triangle squarelimit level "+str(i))
+        plot( cycle(rot(triquarters_g)), title="growing triangle squarelimit level "+str(i))
     
         # draw weird triangle squarelimit
-        plot( cycle(rot(weirdquarters)), title="3 triangles squarelimit level "+str(i))
+        plot( cycle(rot(weirdquarters_s)), title="shrinking 3 triangles squarelimit level "+str(i))
+        plot( cycle(rot(weirdquarters_g)), title="growing 3 triangles squarelimit level "+str(i))
     
         # draw weird triangle squarelimit
-        plot( cycle(rot(weirdquarters2)), title="5 triangles squarelimit level "+str(i))
+        plot( cycle(rot(weirdquarters2_s)), title="shrinking 5 triangles squarelimit level "+str(i))
+        plot( cycle(rot(weirdquarters2_g)), title="growing 5 triangles squarelimit level "+str(i))
     
         # draw fish squarelimit
-        plot( cycle(rot(fishquarters)), title="fish squarelimit level "+str(i))
+        plot( cycle(rot(fishquarters_s)), title="shrinking fish squarelimit level "+str(i))
+        plot( cycle(rot(fishquarters_g)), title="growing fish squarelimit level "+str(i))
