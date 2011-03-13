@@ -162,7 +162,7 @@ def nonet(p, q, r,
                          beside(v, beside(w, x), 1, 2)),
                   1, 2)
 
-def plot(p, f=sys.stdout, title=""):
+def plot(p, f=sys.stdout, title="", frame=1):
     """Writes the given picture function to the given file as PostScript."""
     def w(*s):
         print >> f, '\n'.join(s)
@@ -176,14 +176,29 @@ def plot(p, f=sys.stdout, title=""):
           'grestore' )
 
     w('400 400 scale',
-      '.25 .25 translate',
-      '1 setlinewidth',
-      '0 0 moveto 1 0 lineto 1 1 lineto 0 1 lineto 0 0 lineto',
-      '0 setlinewidth')
+      '.25 .25 translate')
 
+    # frame or corners
+    if frame == 1:
+        # frame
+        w( '0.00125 setlinewidth',
+           'newpath',
+           '0 0 moveto 1 0 lineto 1 1 lineto 0 1 lineto 0 0 lineto',
+           'stroke closepath')
+    elif frame == 2:
+        # mark the 4 corners
+        w( '0.005 setlinewidth',
+           '-0.1 0 moveto 0 0 lineto 0 -0.1 lineto stroke',
+           '-0.1 1 moveto 0 1 lineto 0  1.1 lineto stroke',
+           ' 1.1 1 moveto 1 1 lineto 1  1.1 lineto stroke',
+           ' 1.1 0 moveto 1 0 lineto 1 -0.1 lineto stroke')
+    # 1/400 = 0.0025
+    w('0.0025 setlinewidth',
+      'newpath')
     for (x0, y0), (x1, y1) in p( (0,0), (1,0), (0,1) ):
         w('%f %f moveto %f %f lineto' % (x0, y0, x1, y1))
-    w('stroke', 'showpage')
+    w('stroke',
+      'showpage')
 
 
 if __name__ == '__main__':
