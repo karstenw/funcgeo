@@ -138,6 +138,17 @@ def above(p, q, m=1, n=1):
         return tuple(set( pv + qv ))
     return _above
 
+
+def rightsplit(p, n=0):
+    """Found in a presentation called "Peter Henderson's Picture Language"
+    """
+    if n == 0:
+        return beside(p, above(p, p))
+    else:
+        smaller = rightsplit(p, n-1)
+        return beside(p, above(smaller, smaller))
+
+
 def nonet(p, q, r, 
           s, t, u, 
           v, w, x):
