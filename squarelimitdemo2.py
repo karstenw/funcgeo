@@ -210,10 +210,10 @@ if __name__ == '__main__':
                                           triangle,triangle,e,
                                           triangle,e,triangle,))
 
-    plot(triangle)
-    plot(weirdtriangle)
-    plot(weirdtriangle2)
-    plot(fish)
+    plot(triangle, title="A simple triangle.", frame=2)
+    plot(weirdtriangle, title="3 triangles.", frame=2)
+    plot(weirdtriangle2, title="3 triangles.", frame=2)
+    plot(fish, title="A fish.", frame=2)
 
     # make lots of squarelimit pictures
     layout_shrinking = layout_growing = start
@@ -259,28 +259,28 @@ if __name__ == '__main__':
         plot(triquarters_g, title="triangle quarter growing " + str(i))
     
         # draw the weird triangle quarter
-        plot(weirdquarters_s, title="3 triangles quarter shrinking " + str(i))
-        plot(weirdquarters_g, title="3 triangles quarter growing " + str(i))
+        plot(weirdquarters_s, title="3 triangles quarter shrinking level:" + str(i))
+        plot(weirdquarters_g, title="3 triangles quarter growing level:" + str(i))
 
-        plot(weirdquarters2_s, title="5 triangles quarter shrinking " + str(i))
-        plot(weirdquarters2_g, title="5 triangles quarter growing " + str(i))
+        plot(weirdquarters2_s, title="5 triangles quarter shrinking level:" + str(i))
+        plot(weirdquarters2_g, title="5 triangles quarter growing level:" + str(i))
     
         # draw the fish quarter
-        plot(fishquarters_s, title="shrinking fish quarter " + str(i))
-        plot(fishquarters_g, title="growing fish quarter " + str(i))
+        plot(fishquarters_s, title="shrinking fish quarter level:" + str(i))
+        plot(fishquarters_g, title="growing fish quarter level:" + str(i))
     
         # draw triangle squarelimit
-        plot( cycle(rot(triquarters_s)), title="shrinking triangle squarelimit level "+str(i))
-        plot( cycle(rot(triquarters_g)), title="growing triangle squarelimit level "+str(i))
+        plot( cycle(rot(triquarters_s)), title="shrinking triangle squarelimit level:"+str(i))
+        plot( cycle(rot(triquarters_g)), title="growing triangle squarelimit level:"+str(i))
     
         # draw weird triangle squarelimit
-        plot( cycle(rot(weirdquarters_s)), title="shrinking 3 triangles squarelimit level "+str(i))
-        plot( cycle(rot(weirdquarters_g)), title="growing 3 triangles squarelimit level "+str(i))
+        plot( cycle(rot(weirdquarters_s)), title="shrinking 3 triangles squarelimit level:"+str(i))
+        plot( cycle(rot(weirdquarters_g)), title="growing 3 triangles squarelimit level:"+str(i))
     
         # draw weird triangle squarelimit
-        plot( cycle(rot(weirdquarters2_s)), title="shrinking 5 triangles squarelimit level "+str(i))
-        plot( cycle(rot(weirdquarters2_g)), title="growing 5 triangles squarelimit level "+str(i))
+        plot( cycle(rot(weirdquarters2_s)), title="shrinking 5 triangles squarelimit level:"+str(i))
+        plot( cycle(rot(weirdquarters2_g)), title="growing 5 triangles squarelimit level:"+str(i))
     
         # draw fish squarelimit
-        plot( cycle(rot(fishquarters_s)), title="shrinking fish squarelimit level "+str(i))
-        plot( cycle(rot(fishquarters_g)), title="growing fish squarelimit level "+str(i))
+        plot( cycle(rot(fishquarters_s)), title="shrinking fish squarelimit level:"+str(i))
+        plot( cycle(rot(fishquarters_g)), title="growing fish squarelimit level:"+str(i))
