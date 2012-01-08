@@ -212,7 +212,7 @@ if __name__ == '__main__':
 
     plot(triangle, title="A simple triangle.", frame=2)
     plot(weirdtriangle, title="3 triangles.", frame=2)
-    plot(weirdtriangle2, title="3 triangles.", frame=2)
+    plot(weirdtriangle2, title="5 triangles.", frame=2)
     plot(fish, title="A fish.", frame=2)
 
     # make lots of squarelimit pictures
